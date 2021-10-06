@@ -48,7 +48,7 @@ abstract class Migration
 
     /**
      * Migration constructor.
-     * 
+     *
      * @param PDO $pdo
      */
     public function __construct(PDO $db)
@@ -58,11 +58,11 @@ abstract class Migration
 
     /**
      * Set project for migration.
-     * 
+     *
      * @param Document $project
      * @param Database $projectDB
-     * 
-     * @return Migration 
+     *
+     * @return Migration
      */
     public function setProject(Document $project, Database $projectDB): Migration
     {
@@ -74,7 +74,7 @@ abstract class Migration
 
     /**
      * Iterates through every document.
-     * 
+     *
      * @param callable $callback
      */
     public function forEachDocument(callable $callback): void
@@ -94,10 +94,8 @@ abstract class Migration
 
             Console::log('Migrating: ' . $offset . ' / ' . $this->projectDB->getSum());
             \Co\run(function () use ($all, $callback) {
-
                 foreach ($all as $document) {
                     go(function () use ($document, $callback) {
-
                         $old = $document->getArrayCopy();
                         $new = call_user_func($callback, $document);
 
@@ -128,30 +126,29 @@ abstract class Migration
         }
     }
 
-    public function check_diff_multi($array1, $array2){
+    public function check_diff_multi($array1, $array2)
+    {
         $result = array();
-    
-        foreach($array1 as $key => $val) {
-            if(is_array($val) && isset($array2[$key])) {
+
+        foreach ($array1 as $key => $val) {
+            if (is_array($val) && isset($array2[$key])) {
                 $tmp = $this->check_diff_multi($val, $array2[$key]);
-                if($tmp) {
+                if ($tmp) {
                     $result[$key] = $tmp;
                 }
-            }
-            elseif(!isset($array2[$key])) {
+            } elseif (!isset($array2[$key])) {
                 $result[$key] = null;
-            }
-            elseif($val !== $array2[$key]) {
+            } elseif ($val !== $array2[$key]) {
                 $result[$key] = $array2[$key];
             }
-    
-            if(isset($array2[$key])) {
+
+            if (isset($array2[$key])) {
                 unset($array2[$key]);
             }
         }
-    
+
         $result = array_merge($result, $array2);
-    
+
         return $result;
     }
 
